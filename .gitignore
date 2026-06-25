@@ -39,3 +39,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Intermediate PDF parse outputs
+questions.json
+questions_all.json
+questions_clean.json
+questions_combined.json
+parse_progress.json
+
+# Debug/scratch scripts
+debug_*.mjs
+download_and_parse.mjs
+normalize.mjs
+parse_all.mjs
+parse_pdf.js
+parse_pdf.mjs
+parse_pdf2.mjs
