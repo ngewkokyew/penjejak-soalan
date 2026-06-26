@@ -90,7 +90,7 @@ function MiniBar({ label, count, max, color }: { label: string; count: number; m
   const pct = Math.max(4, Math.round((count / max) * 100));
   return (
     <div className="flex items-center gap-3">
-      <div className="w-48 text-xs text-gray-700 truncate shrink-0">{label}</div>
+      <div className="w-28 md:w-48 text-xs text-gray-700 truncate shrink-0">{label}</div>
       <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
@@ -165,13 +165,13 @@ function OverviewView({ data }: { data: DewanData }) {
         <YearFilter years={years} selected={year} onChange={setYear} />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <StatCard label="Jumlah Soalan" value={qs.length.toLocaleString()} sub={year === "ALL" ? `${data.sessions.length} hari persidangan` : `Tahun ${year}`} />
         <StatCard label="Wakil Rakyat Aktif" value={reps.length.toLocaleString()} sub="Ahli Parlimen" />
         <StatCard label="Kementerian Disasar" value={byMinister.length.toLocaleString()} sub="Kementerian berbeza" />
       </div>
 
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-4">10 Teratas: Soalan Mengikut Kementerian</h3>
           <div className="space-y-2.5">
@@ -278,8 +278,8 @@ function ByRepView({ data }: { data: DewanData }) {
         <YearFilter years={years} selected={year} onChange={(y) => { setYear(y); setSelected(null); }} />
       </div>
 
-      <div className="flex gap-5">
-        <aside className="w-72 shrink-0">
+      <div className="flex flex-col md:flex-row gap-5">
+        <aside className={`w-full md:w-72 md:shrink-0 ${selected ? "hidden md:block" : ""}`}>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-3 border-b border-gray-100">
               <input
@@ -291,7 +291,7 @@ function ByRepView({ data }: { data: DewanData }) {
               />
               <p className="text-xs text-gray-400 mt-1.5 px-1">{displayReps.length} wakil rakyat</p>
             </div>
-            <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - 340px)" }}>
+            <div className="overflow-y-auto max-h-[50vh] md:max-h-[calc(100vh-340px)]">
               {displayReps.length === 0 ? (
                 <p className="text-gray-400 text-sm text-center py-8">Tiada keputusan</p>
               ) : (
@@ -335,6 +335,12 @@ function ByRepView({ data }: { data: DewanData }) {
             </div>
           ) : (
             <div className="space-y-4">
+              <button
+                onClick={() => setSelected(null)}
+                className="md:hidden flex items-center gap-1.5 text-sm text-blue-700 font-medium"
+              >
+                ← Kembali ke senarai
+              </button>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                 <h2 className="text-lg font-bold text-gray-900">{toTitleCase(selectedRep.name)}</h2>
                 <p className="text-sm text-blue-700 font-medium">Parlimen {selectedRep.constituency}</p>
@@ -445,15 +451,15 @@ function ByMinisterView({ data }: { data: DewanData }) {
         <YearFilter years={years} selected={year} onChange={(y) => { setYear(y); setSelected(null); }} />
       </div>
 
-      <div className="flex gap-5">
-        <aside className="w-72 shrink-0">
+      <div className="flex flex-col md:flex-row gap-5">
+        <aside className={`w-full md:w-72 md:shrink-0 ${selected ? "hidden md:block" : ""}`}>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                 {byMinister.length} Kementerian
               </p>
             </div>
-            <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - 320px)" }}>
+            <div className="overflow-y-auto max-h-[50vh] md:max-h-[calc(100vh-320px)]">
               {byMinister.map(({ minister, questions }, i) => {
                 const active = selected === minister;
                 const pct = Math.max(4, Math.round((questions.length / max) * 100));
@@ -488,11 +494,17 @@ function ByMinisterView({ data }: { data: DewanData }) {
         <div className="flex-1 min-w-0">
           {!selectedGroup ? (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-10 text-center">
-              <div className="text-4xl mb-3">👈</div>
+              <div className="text-4xl mb-3">👆</div>
               <p className="text-gray-500 text-sm">Pilih kementerian untuk melihat semua soalan</p>
             </div>
           ) : (
             <div className="space-y-4">
+              <button
+                onClick={() => { setSelected(null); setPage(0); }}
+                className="md:hidden flex items-center gap-1.5 text-sm text-blue-700 font-medium"
+              >
+                ← Kembali ke senarai
+              </button>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                 <h2 className="text-lg font-bold text-gray-900">{toTitleCase(selectedGroup.minister)}</h2>
                 <p className="text-sm text-gray-500 mt-1">
@@ -585,12 +597,12 @@ export default function DewanRakyatPage() {
 
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="flex gap-1">
+          <div className="flex gap-1 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setView(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3.5 text-sm font-medium border-b-2 transition-colors ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-3.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   view === tab.id
                     ? "border-blue-600 text-blue-700"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
